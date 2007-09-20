@@ -12,6 +12,9 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -59,12 +62,43 @@ public class FastOpener extends AnAction {
                 if(!data.isEmpty()) return data.get(0);
             }
         } catch (UnsupportedFlavorException e) {
-            return null;
+            // fall through
         } catch (IOException e) {
-            return null;
+            // fall through
+        }
+
+        // if this is Unix, try xclip
+        // one would expect that this is unnecessary, but somehow the above scheme
+        // doesn't catch the contents xclip put into the clipboard.
+        if(File.separatorChar=='/') {
+            try {
+                ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                ProcessBuilder b = new ProcessBuilder("xclip", "-o", "-selection", "clipboard");
+                b.redirectErrorStream(true);
+                Process p = b.start();
+                p.getOutputStream().close();
+                copyStream(p.getInputStream(),buf);
+                p.waitFor();
+                File f = new File(new String(buf.toByteArray()));
+                if(f.exists())  return f;
+            } catch (IOException e) {
+                // fall through
+            } catch (InterruptedException e) {
+                // fall through
+            }
         }
 
         return null;
+    }
+
+    private void copyStream(InputStream i, OutputStream o) throws IOException {
+        byte[] buf = new byte[1024];
+        int len;
+
+        while((len=i.read(buf))>=0)
+            o.write(buf,0,len);
+        i.close();
+        o.close();
     }
 
     public void update(AnActionEvent event) {
