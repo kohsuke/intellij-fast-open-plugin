@@ -6,13 +6,13 @@ import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Messages;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -72,17 +72,32 @@ public class FastOpener extends AnAction {
         // doesn't catch the contents xclip put into the clipboard.
         if(File.separatorChar=='/') {
             try {
-                ByteArrayOutputStream buf = new ByteArrayOutputStream();
-                ProcessBuilder b = new ProcessBuilder("xclip", "-o", "-selection", "clipboard");
-                b.redirectErrorStream(true);
-                Process p = b.start();
-                p.getOutputStream().close();
-                copyStream(p.getInputStream(),buf);
-                p.waitFor();
-                File f = new File(new String(buf.toByteArray()));
-                if(f.exists())  return f;
-            } catch (IOException e) {
-                // fall through
+                final File[] result = new File[1];
+                Thread t = new Thread() {
+                    public void run() {
+                        Process p = null;
+                        try {
+                            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                            ProcessBuilder b = new ProcessBuilder("xclip", "-o", "-selection", "clipboard");
+                            b.redirectErrorStream(true);
+                            p = b.start();
+                            p.getOutputStream().close();
+                            copyStream(p.getInputStream(), buf);
+                            p.waitFor();
+                            result[0] = new File(new String(buf.toByteArray()));
+                        } catch (IOException e) {
+                            // ignore
+                            if(p!=null) p.destroy();
+                        } catch (InterruptedException e) {
+                            // ignore
+                            if(p!=null) p.destroy();
+                        }
+                    }
+                };
+                t.start();
+                t.join(1000);
+                t.interrupt(); // abandon the processing if it's taking too long
+                if(result[0]!=null && result[0].exists())  return result[0];
             } catch (InterruptedException e) {
                 // fall through
             }
