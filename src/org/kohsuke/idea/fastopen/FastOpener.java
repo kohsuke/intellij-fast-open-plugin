@@ -84,7 +84,7 @@ public class FastOpener extends AnAction {
                             p.getOutputStream().close();
                             copyStream(p.getInputStream(), buf);
                             p.waitFor();
-                            result[0] = new File(new String(buf.toByteArray()));
+                            result[0] = new File(new String(buf.toByteArray()).trim());
                         } catch (IOException e) {
                             // ignore
                             if(p!=null) p.destroy();
