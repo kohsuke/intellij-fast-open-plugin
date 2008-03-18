@@ -25,6 +25,10 @@ public class FastOpener extends AnAction {
         File f = getFileFromClipboard();
         if(f==null) return null;
 
+        return adjust(f);
+    }
+
+    public static File adjust(File f) {
         String n = f.getName();
         if(n.endsWith(".ipr") || n.equals("pom.xml"))
             return f;   // project file name is selected

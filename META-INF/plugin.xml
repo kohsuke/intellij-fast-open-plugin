@@ -12,4 +12,10 @@
       <add-to-group group-id="FileMenu" anchor="after" relative-to-action="OpenProject"/>
     </action>
   </actions>
+
+  <application-components>
+    <component>
+      <implementation-class>org.kohsuke.idea.fastopen.TcpListener</implementation-class>
+    </component>
+  </application-components>
 </idea-plugin>
