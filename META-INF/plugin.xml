@@ -13,6 +13,11 @@
     </action>
   </actions>
 
+  <change-notes>
+    Now listens on TCP/IP port 39524 and if a file name or directory name
+    is sent to this port, it'll open it.
+  </change-notes>
+
   <application-components>
     <component>
       <implementation-class>org.kohsuke.idea.fastopen.TcpListener</implementation-class>
