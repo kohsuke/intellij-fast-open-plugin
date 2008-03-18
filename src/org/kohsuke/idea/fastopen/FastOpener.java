@@ -1,12 +1,12 @@
 package org.kohsuke.idea.fastopen;
 
+import com.intellij.ide.impl.ProjectUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Messages;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -133,7 +133,7 @@ public class FastOpener extends AnAction {
         try {
             File f = getProjectFromClipboard();
             if(f!=null)
-                ProjectManager.getInstance().loadAndOpenProject(f.getAbsolutePath());
+                 ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
         } catch (Exception x) {
             Messages.showErrorDialog(x.getMessage(),"Error!");
         }
