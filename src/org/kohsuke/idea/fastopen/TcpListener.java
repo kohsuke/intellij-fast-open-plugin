@@ -38,7 +38,7 @@ public class TcpListener extends Thread implements ApplicationComponent {
     }
 
     public void run() {
-        System.out.println("fast-open thread started listening");
+//        System.out.println("fast-open thread started listening");
         try {
             ServerSocket ss = new ServerSocket(39524,0, InetAddress.getByAddress(new byte[]{127,0,0,1}));
             while(true) {
