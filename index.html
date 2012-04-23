@@ -1,0 +1,76 @@
+<html>
+<head>
+	<title>IntelliJ fast-open plugin</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<style>
+		PRE {
+			background-color: #ddd;
+			margin-left: 2em;
+			padding: 1em;
+		}
+		h4 {
+			clear: none;
+		}
+		IMG {
+			vertical-align: middle;
+		}
+	</style>
+</head>
+<body>
+	<h1>IntelliJ fast-open plugin</h1>
+	<div style="float:right; margin: 1em; padding:1em; font-size: 2em; background-color: #e5ffcc;">
+	  <img src="../download.png">
+	  <a href="http://plugins.intellij.net/plugin/?id=1567">Download</a>
+	</div>
+	<p>
+		This plugin adds "Open Project <u>F</u>ast [...]" menu item in the "File" menu. This menu opens the project currently selected in the clipboard, and thereby allowing the following workflow that lets you open a project more quickly.
+	</p>
+	
+	<h4>Select a project in Explorer/Nautilus</h4>
+	<ol>
+		<li>Select a <tt>.ipr</tt> file, <tt>pom.xml</tt>, or a directory that contains either of those in Windows Explorer, GNOME Nautilus, Konquerer, or any other file manager.
+		<li>Come back to IntelliJ IDEA, type "Alt+F > F" to open that project.
+	</ol>
+	
+	<h4>Select a project from anywhere</h4>
+	<ol>
+		<li>Send a file name of a <tt>.ipr</tt> file, <tt>pom.xml</tt>, or a directory that contains either of those from your editor, your shell, your web browser, your e-mail, or just about anywhere.
+		<li>Come back to IntelliJ IDEA, type "Alt+F > F" to open that project.
+	</ol>
+	
+	<p>
+		This plugin is particularly effective when you have a small shell script that lets you send arbitrary file name into clipboard. On Unix, such script would look something like:
+	</p>
+<pre>
+#!/bin/sh
+D=`dirname "$1"`
+B=`basename "$1"`
+abspath="`cd \"$D\" 2>/dev/null && pwd || echo \"$D\"`/$B"
+echo $abspath | <a href="http://people.debian.org/~kims/xclip/">xclip</a> -selection clipboard
+</pre>
+	<p>
+		On Windows it will look something like this:
+	</p>
+<pre>
+@echo off
+echo %~f1 | <a href="http://www.steve.org.uk/Software/clipboard/">clipboard</a> -
+</pre>
+	<p>
+		In this way, you can pick a project easily from a shell, by taking advantage of a file name completion and other smart features in shell like <a href="http://zsh.sourceforge.net/Doc/Release/zsh_13.html#SEC61">this</a>.
+	</p>
+	
+	<h3>If you need it to be even more quicker...</h3>
+	<p>
+	  This plugin also opens a TCP port 39524 and waits for a connection. You can have the plugin open a project by simply sending a directory name that contains <tt>.ipr</tt> or <tt>pom.xml</tt>, or a name of those files. For example, on Unix, such script could be:
+	</p>
+<pre>
+#!/bin/sh
+D=`dirname "$1"`
+B=`basename "$1"`
+abspath="`cd \"$D\" 2>/dev/null && pwd || echo \"$D\"`/$B"
+echo $abspath | nc -q 1 localhost 39524
+</pre>
+    <p>
+      I haven't tried this on Windows, but I suppose <tt>telnet</tt> command would do.
+</body>
+</html>
