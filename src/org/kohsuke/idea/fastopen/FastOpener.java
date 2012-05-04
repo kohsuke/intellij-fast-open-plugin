@@ -39,6 +39,8 @@ public class FastOpener extends AnAction {
             for( File child : children ) {
                 if(child.getName().endsWith(".ipr"))
                     return child;
+                if(child.getName().equals(".idea"))
+                    return f;
             }
             // next attempt is to find POM
             for( File child : children ) {

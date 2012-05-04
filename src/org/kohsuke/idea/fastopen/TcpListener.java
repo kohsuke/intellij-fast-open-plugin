@@ -53,7 +53,7 @@ public class TcpListener extends Thread implements ApplicationComponent {
                                 ProjectUtil.openOrImport(f.getAbsolutePath(), null, true);
                         }
                     });
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     socket.close();
